@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { ScatterChart } from '@mui/x-charts/ScatterChart';
 import { ChartsTooltipContainer, useItemTooltip } from '@mui/x-charts/ChartsTooltip';
 import { styled } from '@mui/material/styles';
@@ -25,6 +26,9 @@ const customColors = [
     "#E121FF",
 ];
 
+const chartMargin = { left: 70, right: 20, top: 20, bottom: 45 };
+const chartHeight = 400;
+
 function formatTimeStamp(ut) {
     return new Date((ut) * 1000).toLocaleTimeString(
         [],
@@ -33,12 +37,13 @@ function formatTimeStamp(ut) {
 }
 
 const chartSetting = {
-    yAxis: [{ width: 50, scaleType: 'log', base: 2, zoom: true, }],
-    xAxis: [{ valueFormatter: (v) => (v ? formatTimeStamp(v) : ''), zoom: true, }],
+    margin: chartMargin,
+    yAxis: [{ width: 50, scaleType: 'log', base: 2, zoom: true }],
+    xAxis: [{ valueFormatter: (v) => (v ? formatTimeStamp(v) : ''), zoom: true }],
 };
 
 function formatLargeNumber(num) {
-    if (num === null || num === undefined || isNaN(num)) return '0';
+    if (num === null || num === undefined || Number.isNaN(num)) return '0';
 
     const absNum = Math.abs(num);
     let formatted;
@@ -61,15 +66,13 @@ function formatLargeNumber(num) {
 const TooltipPaper = styled('div', {
     name: 'Tooltip',
     slot: 'Paper',
-})(({ theme }) => {
-    return {
-        padding: theme.spacing(1),
-        backgroundColor: (theme.vars || theme).palette.background.paper,
-        color: (theme.vars || theme).palette.text.primary,
-        borderRadius: (theme.vars || theme).shape?.borderRadius,
-        border: `solid ${(theme.vars || theme).palette.divider} 1px`,
-    };
-});
+})(({ theme }) => ({
+    padding: theme.spacing(1),
+    backgroundColor: (theme.vars || theme).palette.background.paper,
+    color: (theme.vars || theme).palette.text.primary,
+    borderRadius: (theme.vars || theme).shape?.borderRadius,
+    border: `solid ${(theme.vars || theme).palette.divider} 1px`,
+}));
 
 function CustomTooltip() {
     const item = useItemTooltip();
@@ -109,21 +112,29 @@ function CustomTooltip() {
     );
 }
 
+const MemoizedScatterChart = memo(function MemoizedScatterChart({ series }) {
+    return (
+        <ScatterChart
+            height={chartHeight}
+            series={series}
+            grid={{ horizontal: true, vertical: true }}
+            voronoiMaxRadius={20}
+            colors={customColors}
+            slots={{ tooltip: CustomTooltip }}
+            {...chartSetting}
+        />
+    );
+});
+
 export default function DamageScatterPlot({ series }) {
     const { t } = useTranslation();
 
     return (
-        <Paper square={false} sx={{ padding: "6px", height: "100%" }}>
-            <Typography variant="h4" sx={{ marginBottom: "10px" }}>{t('analytics.damageScatterPlot')}</Typography>
-            <ScatterChart
-                height={400}
-                series={series}
-                grid={{ horizontal: true, vertical: true }}
-                voronoiMaxRadius={20}
-                colors={customColors}
-                slots={{ tooltip: CustomTooltip }}
-                {...chartSetting}
-            />
+        <Paper square={false} sx={{ padding: '6px', height: '100%' }}>
+            <Typography variant="h4" sx={{ marginBottom: '10px' }}>{t('analytics.damageScatterPlot')}</Typography>
+            <MemoizedScatterChart series={series} />
         </Paper>
     );
 }
+
+MemoizedScatterChart.displayName = 'MemoizedScatterChart';
