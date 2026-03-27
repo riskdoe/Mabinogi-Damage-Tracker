@@ -21,8 +21,11 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Snackbar from '@mui/material/Snackbar';
+import Collapse from '@mui/material/Collapse';
 import { DataGrid } from '@mui/x-data-grid';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
+import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded';
 import DamageCard from './DamageCard';
 import PlayerCountCard from './PlayerCountCard';
 import TimeCard from './TimeCard';
@@ -35,6 +38,7 @@ import ExcludedIntervalSelectionPanel from './ExcludedIntervalSelectionPanel';
 import LargestHitCard from './LargestHitCard';
 import BurstCard from './BurstCard';
 import HealingCard from './HealingCard';
+import BattleSummaryPanel from './BattleSummaryPanel';
 import { getLocalizedSkillName } from '../localization/i18n/skills';
 
 function formatTimeStamp(ut) {
@@ -132,7 +136,7 @@ function areIntervalsEffectivelySame(left, right) {
 
 export default function AnalyticsMenu({ start_ut, end_ut }) {
     const { t, i18n } = useTranslation();
-    const { burstCount, largestDamageInstanceCount, skillUsageTopN, topEnemyCount } = useContext(AppContext)
+    const { burstCount, largestDamageInstanceCount, skillUsageTopN, topEnemyCount, showBattleSummary } = useContext(AppContext)
     const [damageOverTimeData, setDamageOverTimeData] = useState([])
     const [damagePieChartData, setDamagePieChartData] = useState([])
     const [combinedDamageOverTimeData, setCombinedDamageOverTimeData] = useState([])
@@ -149,6 +153,7 @@ export default function AnalyticsMenu({ start_ut, end_ut }) {
     const [hoveredExcludedIntervalId, setHoveredExcludedIntervalId] = useState(null);
     const [pendingExcludedInterval, setPendingExcludedInterval] = useState(null);
     const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [isBattleSummaryExpanded, setIsBattleSummaryExpanded] = useState(false);
 
     const [skillDamagesRaw, setSkillDamagesRaw] = useState([]);
     const [selectedSkillPlayerId, setSelectedSkillPlayerId] = useState('all');
@@ -416,6 +421,24 @@ export default function AnalyticsMenu({ start_ut, end_ut }) {
     const totalExcludedDuration = useMemo(() => excludedIntervals.reduce((sum, interval) => sum + (interval.endUt - interval.startUt), 0), [excludedIntervals]);
 
     const effectiveAnalyzedDuration = useMemo(() => Math.max((end_ut - start_ut) - totalExcludedDuration, 0), [end_ut, start_ut, totalExcludedDuration]);
+    const battleSummaryRows = useMemo(() => (
+        (damageOverTimeData ?? [])
+            .map((series) => {
+                const playerTotalDamage = series.data?.at(-1) ?? 0;
+                return {
+                    playerName: series.label,
+                    totalDamage: playerTotalDamage,
+                    dps: effectiveAnalyzedDuration > 0 ? playerTotalDamage / effectiveAnalyzedDuration : 0,
+                    contribution: totalDamage > 0 ? (playerTotalDamage / totalDamage) * 100 : 0,
+                };
+            })
+            .sort((left, right) => right.totalDamage - left.totalDamage)
+    ), [damageOverTimeData, effectiveAnalyzedDuration, totalDamage]);
+
+    const topBurstSummary = useMemo(() => {
+        const preferred15sBand = bands.find((bandSet) => Array.isArray(bandSet) && bandSet[0]?.label === '15s');
+        return preferred15sBand?.[0] ?? null;
+    }, [bands]);
 
     const damageBySkillColumns = useMemo(() => ([
         { field: 'skillName', headerName: t('analytics.skill'), flex: 1, minWidth: 200, sortable: false },
@@ -561,6 +584,34 @@ export default function AnalyticsMenu({ start_ut, end_ut }) {
                     )
                     : Array.from(2).map((_, index) => <Skeleton key={index} variant="rounded" />)
                 }
+                {showBattleSummary ? (
+                    <Grid size={{ xs: 12 }}>
+                        <Paper square={false} sx={{ p: 2 }}>
+                            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                <Typography variant="h4">{t('analytics.battleSummary')}</Typography>
+                                <Button
+                                    variant="text"
+                                    endIcon={isBattleSummaryExpanded ? <ExpandLessRoundedIcon /> : <ExpandMoreRoundedIcon />}
+                                    onClick={() => setIsBattleSummaryExpanded((currentValue) => !currentValue)}
+                                >
+                                    {isBattleSummaryExpanded ? t('analytics.collapse') : t('analytics.expand')}
+                                </Button>
+                            </Stack>
+                            <Collapse in={isBattleSummaryExpanded} timeout="auto" unmountOnExit>
+                                <Box sx={{ pt: 2 }}>
+                                    <BattleSummaryPanel
+                                        totalDamage={totalDamage ?? 0}
+                                        effectiveAnalyzedDuration={effectiveAnalyzedDuration}
+                                        participants={numberOfPlayer ?? 0}
+                                        highestHit={largestDamageInstances[0] ?? null}
+                                        topBurst={topBurstSummary}
+                                        players={battleSummaryRows}
+                                    />
+                                </Box>
+                            </Collapse>
+                        </Paper>
+                    </Grid>
+                ) : null}
 
                 <Grid size={{ xs: 12, sm: 12, lg: 8, xl: 4 }} >
                     <PlayerDamagePieChart chartData={damagePieChartData} />
