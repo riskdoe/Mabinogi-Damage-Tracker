@@ -102,6 +102,7 @@ Currently the main missing feature set is redoubled offensive and star dust info
 
 [KilloPillers](https://github.com/KilloPillers) - Lead front end designer, data presentation and user experience, backend integration and overall major project lead.  
 Anonymous Devs - All around assistance.  
+[Kametamu](https://github.com/kametamu) - Redesign parser to use tcp stream for better reliability, started the localization process for other languages, added front end UX improvements
 [LukasTD](https://github.com/LukasTD/NaoParse  ) - NaoParse – foundation for beginning this project with great resources.  
 [Exectails](https://github.com/exectails ) - Morrighan & MabiPale2 – which was the foundation for NaoParse.  
 [Pril](https://gitlab.com/prilus/mabidilmeter  ) - dilmatulgi – The Korean version of NaoParse with additional information on parsing packets.  
