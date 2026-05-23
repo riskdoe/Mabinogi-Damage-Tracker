@@ -23,6 +23,15 @@ function Dashboard() {
     const [largestDamageInstanceCount, setLargestDamageInstantCount] = useState(
         () => localStorage.getItem('largestDamageInstanceCount') || 3
     );
+    const [skillUsageTopN, setSkillUsageTopN] = useState(
+        () => Number(localStorage.getItem('skillUsageTopN')) || 10
+    );
+    const [topEnemyCount, setTopEnemyCount] = useState(
+        () => Number(localStorage.getItem('topEnemyCount')) || 3
+    );
+    const [showBattleSummary, setShowBattleSummary] = useState(
+        () => localStorage.getItem('showBattleSummary') === 'true'
+    );
 
     useEffect(() => {
         document.documentElement.setAttribute('data-mui-color-scheme', mode);
@@ -41,6 +50,18 @@ function Dashboard() {
         localStorage.setItem('largestDamageInstanceCount', largestDamageInstanceCount) 
     }, [largestDamageInstanceCount])
 
+    useEffect(() => {
+        localStorage.setItem('skillUsageTopN', skillUsageTopN)
+    }, [skillUsageTopN])
+
+    useEffect(() => {
+        localStorage.setItem('topEnemyCount', topEnemyCount)
+    }, [topEnemyCount])
+
+    useEffect(() => {
+        localStorage.setItem('showBattleSummary', showBattleSummary);
+    }, [showBattleSummary])
+
     return (
         <AppContext.Provider
             value={{
@@ -53,7 +74,13 @@ function Dashboard() {
                 burstCount,
                 setBurstCount,
                 largestDamageInstanceCount,
-                setLargestDamageInstantCount
+                setLargestDamageInstantCount,
+                skillUsageTopN,
+                setSkillUsageTopN,
+                topEnemyCount,
+                setTopEnemyCount,
+                showBattleSummary,
+                setShowBattleSummary,
             }}
         >
             <AppTheme mode={mode}>
