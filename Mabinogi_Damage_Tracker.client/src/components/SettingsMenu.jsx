@@ -60,6 +60,7 @@ export default function SettingsMenu() {
         const selectedLanguage = event.target.value;
         i18n.changeLanguage(selectedLanguage);
         localStorage.setItem('lang', selectedLanguage);
+        //console.log(i18n.language);
     };
 
     const handleAdapterChange = async (event) => {
@@ -97,12 +98,13 @@ export default function SettingsMenu() {
                     <Select
                         labelId="language-selector-label"
                         id="language-selector"
-                        value={i18n.language.startsWith('ja') ? 'ja' : 'en'}
+                        value={t('common.SettingValue')}
                         onChange={handleLanguageChange}
                         label={t('common.language')}
-                    >
+                    >   //add new langauges here!
                         <MenuItem value="en">{t('common.english')}</MenuItem>
                         <MenuItem value="ja">{t('common.japanese')}</MenuItem>
+                        <MenuItem value="cn">{t('common.traditionalChinese')}</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
