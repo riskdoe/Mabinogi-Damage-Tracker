@@ -935,6 +935,11 @@ namespace Mabinogi_Damage_Tracker
             BlockWorldGMSkill = 65003,
             AdministrativePicking2 = 65006,
             IgnusPlume = 59060,
+            VentusHowl = 59062,
+            HermeticHarmonySpark = 59065,
+            TriAssault = 59064,
+            AquaVolley = 59061,
+            TerraScourge = 59063
     }
     
 }
