@@ -1,8 +1,3 @@
-🇯🇵 日本語ドキュメント  
-→ README_JA.md
-
-Download
-https://github.com/kametamu/Mabinogi-Damage-Tracker/releases
 
 # Dear Nexon Devs / Community Managers / Game Masters and Decision Makers,  
 
