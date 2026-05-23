@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography'
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import DotsMobileStepper from './DotsMobileStepper';
+import { useTranslation } from 'react-i18next';
 
 function formatLargeNumber(num) {
     if (num === null || num === undefined || isNaN(num)) return '0';
@@ -27,28 +28,38 @@ function formatLargeNumber(num) {
     return formatted.replace(/\.0(?=[A-Z])/, '');
 }
 export default function BurstCard({ bands, graphBands, setGraphBands }) {
-    const cardLabel = bands[0].label
+    const { t } = useTranslation();
     const [activeStep, setActiveStep] = useState(0);
-
-    const currentBurst = bands[activeStep];
+    const hasBands = Array.isArray(bands) && bands.length > 0 && !!bands[0];
+    const cardLabel = hasBands ? bands[0].label : null;
 
     useEffect(() => {
+        if (!hasBands) {
+            return;
+        }
+
         setGraphBands(prev =>
             prev.map(band =>
                 band.label === cardLabel ? bands[activeStep] : band
             )
         );
-    }, [activeStep, cardLabel, bands, setGraphBands])
+    }, [activeStep, cardLabel, bands, hasBands, setGraphBands])
+
+    if (!hasBands) {
+        return null;
+    }
+
+    const currentBurst = bands[activeStep];
 
     return (
         <Paper square={false} sx={{ position: 'relative', "padding-left": "32px","padding-top":"20px", gap: "10px", height: "100%", display: 'flex', flexDirection: 'column'}}>
             <AutoAwesomeIcon fontSize="medium" />
             <Box sx={{ display: "flex", flexDirection: { xs: 'column', md: 'row' }, gap: { xs: 2, sm: 4, md: 8 }}}>
                 <Box sx={{ gap: "5px", flexGrow: "2"}} >
-                    <Typography variant="subtitle1">Largest {currentBurst.label} burst</Typography>
+                    <Typography variant="subtitle1">{t('analytics.largestBurst', { label: currentBurst.label })}</Typography>
                     <Typography variant="h3">{currentBurst.player_name}</Typography>
                     <Typography variant="h3">{formatLargeNumber(currentBurst.damage)}</Typography>
-                    <Typography variant="subtitle1">Started at {currentBurst.start}</Typography>
+                    <Typography variant="subtitle1">{t('analytics.startedAt', { time: currentBurst.start })}</Typography>
                 </Box>
             </Box>
             <Box sx={{ position: 'absolute', bottom: 25 , left: '50%', transform: "translate(-50%, 50%)" }} >
@@ -57,4 +68,3 @@ export default function BurstCard({ bands, graphBands, setGraphBands }) {
         </Paper>
     );
 }
-
