@@ -41,7 +41,7 @@ This application is only going to record information that you would normally see
 No, you absolutely can run this all locally. But that would mean Nexon would have the capability to detect you are running the software. The implications of that being unknown at this moment.
 
 ## Does this work in other regions? Im in KR/JP/CN/… and would like to use it.
-We don't know, please reach out in the discussions/bug report area of this Github repo and we can assist in getting it working. It is possible that out of the box it ‘just works’
+We have users in JP, CN may require different ports to be used but we are unsure, KR is unknown at the moment. Try to run it if you are in these regions and leave an issue if something does not work.
 
 ## Is this safe?
 Its open source software so you can build and compile it yourself and check the hash of the server binary. Its also written in .net so you can see what operations are being ran with .net decompilers.
