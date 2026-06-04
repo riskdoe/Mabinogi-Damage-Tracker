@@ -35,7 +35,7 @@ On the other end our application has no capability of spoofing or exploiting any
 ## Is this accurate?
 Yes! (no), kind of? Good enough.
 
-This application is only going to record information that you would normally see on your screen. So if you are standing too far away from a boss where you do not see the damage render in on your screen you will not track that information. Redoubled offensive and Stardust skills are also not recorded and that is a feature we would like to implement but have had difficulty doing so.
+This application is only going to record information that you would normally see on your screen. So if you are standing too far away from a boss where you do not see the damage render in on your screen you will not track that information.
 
 ## Do i need to use the managed switch/router and a second computer.
 No, you absolutely can run this all locally. But that would mean Nexon would have the capability to detect you are running the software. The implications of that being unknown at this moment.
