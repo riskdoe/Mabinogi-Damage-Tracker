@@ -94,7 +94,7 @@ We monitor healing, general chat, and damage. Check the live page for a live log
 
 
 ## We are an open source project and appreciate any contributions to the project!
-Currently the main missing feature set is redoubled offensive and star dust information not being read. We are also actively developing the user experience and adding front end features. Check back with the repo occasionally and see if any new updates are out.
+We are actively developing the user experience and adding front end features. Check back with the repo occasionally and see if any new updates are out.
 
 
 
